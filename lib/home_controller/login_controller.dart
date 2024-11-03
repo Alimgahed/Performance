@@ -2,18 +2,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
-  Future<void> register_code(
-      //  String age,
-      //  String name,
-      //  String phone,
-      //  int stdying_yaer,
-      //  String password,
-      //  String email,
-      ) async {
+  Future<void> register_code() async {
     try {
       final res = await http.post(
         Uri.parse("http://172.16.16.7:3000/register"),
-        headers: {"lang": "AR"},
+        headers: {"lang": "ar"},
         body: {
           "name": "ali",
           "age": "12",
