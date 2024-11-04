@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:performance/Departments/Public_relations.dart';
-import 'package:performance/home_controller/get_perforamnce_controler.dart';
 import 'package:performance/home_controller/home_controller.dart';
 import 'package:performance/home_controller/login_controller.dart';
 import 'package:performance/my_widget.dart';
@@ -9,8 +8,6 @@ import 'package:performance/my_widget.dart';
 class Home extends StatelessWidget {
   Home({super.key});
   final LoginController login = Get.put(LoginController());
-  final GetPerformanceController performance =
-      Get.put(GetPerformanceController());
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +124,6 @@ class Home extends StatelessWidget {
                               text:
                                   "الإدارة العامة للعلاقات العامة وخدمة المواطنين",
                               ontap: () async {
-                                await performance.getPerformance(id: 1);
                                 Get.to(() => PublicRelations());
                               }),
                         ],

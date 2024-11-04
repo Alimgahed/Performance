@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:performance/home_controller/add_peroformance_controller.dart';
 import 'package:performance/home_controller/get_perforamnce_controler.dart';
 import 'package:performance/my_widget.dart';
 
+// ignore: must_be_immutable
 class PublicRelations extends StatelessWidget {
-  const PublicRelations({super.key});
+  PublicRelations({super.key});
+  DateFormat dateFormat = DateFormat('d/M/yyyy');
 
   @override
   Widget build(BuildContext context) {
     final GetPerformanceController performance =
-        Get.find();
+        Get.put(GetPerformanceController());
+    final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,146 +31,125 @@ class PublicRelations extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () {
-                   final AddPerformanceController add =
-        Get.put(AddPerformanceController());
+                final AddPerformanceController add =
+                    Get.put(AddPerformanceController());
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      content: Column(
-                        children: [
-                          customTextFormField(
-                            controller: add.name,
-                            hintText: 'اسم المؤشر',
+                      content: SingleChildScrollView(
+                        child: Form(
+                          key: _globalKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize
+                                .min, // Ensure the dialog is compact
+                            children: [
+                              customTextFormField(
+                                iconData: Icons.ads_click,
+                                controller: add.name,
+                                hintText: 'اسم المؤشر',
+                              ),
+                              SizedBox(height: 10),
+                              customTextFormField(
+                                controller: add.date_start,
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      add.date_start.text =
+                                          DateFormat.yMd('ar').format(value);
+                                      add.start = DateTime(
+                                          value.year, value.month, value.day);
+                                    }
+                                  });
+                                },
+                                hintText: 'بداية التاريخ',
+                                iconData: Icons.calendar_month,
+                              ),
+                              SizedBox(height: 10),
+                              customTextFormField(
+                                iconData: Icons.calendar_month,
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      add.date_end.text =
+                                          DateFormat.yMd('ar').format(value);
+                                      add.end = DateTime(
+                                          value.year, value.month, value.day);
+                                    }
+                                  });
+                                },
+                                controller: add.date_end,
+                                hintText: 'نهاية التاريخ',
+                              ),
+                              SizedBox(height: 10),
+                              customTextFormField(
+                                iconData: Icons.arrow_upward,
+                                allowOnlyDigits: true,
+                                controller: add.value,
+                                hintText: 'الدرجة',
+                              ),
+                              customButton(
+                                text: "حفظ",
+                                onPressed: () {
+                                  if (_globalKey.currentState!.validate()) {
+                                    add.addPerformance(
+                                      id: 1,
+                                      name: add.name.text,
+                                      value: add.value.text,
+                                      date_to: DateFormat('yyyy-MM-dd')
+                                          .format(add.start!),
+                                      date_from: DateFormat('yyyy-MM-dd')
+                                          .format(add.end!),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
-                          Text("بداية المؤشر"),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: customTextFormField(
-                                    controller: add.dayFrom,
-                                    // labelText: 'اليوم',
-                                    hintText: 'أدخل اليوم',
-                                    // controller: dayController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال اليوم'; // Please enter the day
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: customTextFormField(
-                                    controller: add.monthFrom,
-                                    // labelText: 'الشهر',
-                                    hintText: 'أدخل الشهر',
-                                    // controller: monthController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال الشهر'; // Please enter the month
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: customTextFormField(
-                                    controller: add.yearFrom,
-                                    // labelText: 'السنة',
-                                    hintText: 'أدخل السنة',
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال السنة'; // Please enter the year
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                )
-                              ]),
-                          Text(" نهاية المؤشر"),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: customTextFormField(
-                                    controller: add.dayTo,
-                                    // labelText: 'اليوم',
-                                    hintText: 'أدخل اليوم',
-                                    // controller: dayController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال اليوم'; // Please enter the day
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: customTextFormField(
-                                    controller: add.monthTo,
-                                    // labelText: 'الشهر',
-                                    hintText: 'أدخل الشهر',
-                                    // controller: monthController,
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال الشهر'; // Please enter the month
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: customTextFormField(
-                                    
-                                    controller: add.yearTo,
-                                    // labelText: 'السنة',
-                                    hintText: 'أدخل السنة',
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'يرجى إدخال السنة'; // Please enter the year
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                )
-                              ]),
-                          customTextFormField(
-                            controller: add.value,
-                            hintText: 'الدرجة',
-                          ),
-                          customButton(text: "done", onPressed: () {
-
-                            add.addPerformance(id:1, name:add.name.text, value:add.value.text, date:"${add.yearFrom.text}-${add.monthFrom.text}-${add.dayFrom.text}:${add.yearTo.text}-${add.monthTo.text}-${add.dayTo.text}");
-                          })
-                        ],
+                        ),
                       ),
                     );
                   },
                 );
               },
               child: Text("اضافة")),
-          for (var i in performance.relations)
-            Row(
-              children: [
-                Text("${i.public_releationsName}"),
-                SizedBox(
-                  width: 20,
+
+          GetBuilder<GetPerformanceController>(
+            builder: (controller) {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: performance
+                      .relations.length, // Number of items in the list
+                  itemBuilder: (context, index) {
+                    var i =
+                        performance.relations[index]; // Get the current item
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5.0), // Optional padding
+                      child: Row(
+                        children: [
+                          Text("${i.public_releationsName}"),
+                          SizedBox(width: 20),
+                          Text("${i.public_releationsValue}"),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                Text("${i.public_releationsValue}")
-              ],
-            ),
+              );
+            },
+          )
+
           // You can add more widgets here to display performance data
         ],
       ),

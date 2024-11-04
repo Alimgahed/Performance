@@ -1,53 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget customTextFormField({
-  String? labelText,
-  required String hintText,
   TextEditingController? controller,
-  TextInputType keyboardType = TextInputType.text,
-  bool obscureText = false,
+  String? labelText,
+  String? hintText,
+  Function()? onTap,
+  Function(String)? changed,
+  Function()? onEditingComplete,
+  bool? readonly,
+  IconData? iconData,
   String? Function(String?)? validator,
+  bool allowOnlyDigits = false,
+  bool useValidator = true,
+  bool? secure,
 }) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: (value) {
-        // Default validation: check if the input is empty
-        if (value == null || value.isEmpty) {
-          return 'يرجى إدخال قيمة'; // Please enter a value
-        }
-        // Additional validation can be added here
-        if (validator != null) {
-          return validator(value); // Use custom validator if provided
-        }
-        return null; // Return null if validation passes
-      },
-      textAlign: TextAlign.right, // Align hint text to the right
-      textDirection: TextDirection.rtl, // Set text direction to right-to-left
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
+  return TextFormField(
+    obscureText: secure ?? false,
+    controller: controller,
+    onTap: onTap,
+    readOnly: readonly ?? false,
+    keyboardType: allowOnlyDigits ? TextInputType.number : TextInputType.text,
+    inputFormatters: allowOnlyDigits
+        ? <TextInputFormatter>[
+            FilteringTextInputFormatter.allow(
+              RegExp(r'^\d*\.?\d*$'), // Allow digits and optional decimal point
+            ),
+          ]
+        : null,
+    style: TextStyle(fontSize: 18.0),
+    textAlign: TextAlign.right,
+    textDirection: TextDirection.rtl,
+    decoration: InputDecoration(
+      labelText: labelText,
+      hintText: hintText,
+      prefixIcon: Icon(
+        iconData,
+        color: Colors.blue,
       ),
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      labelStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 12,
+      ),
+      filled: true, // Add this if you want the fill color to be visible
     ),
+    validator: useValidator
+        ? validator ??
+            (value) {
+              if (value == null || value.isEmpty) {
+                return "يرجى إدخال قيمة";
+              }
+              return null;
+            }
+        : null,
+    onChanged: changed,
+    onEditingComplete: onEditingComplete,
   );
 }
 

@@ -1,45 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:performance/home.dart';
+import 'package:performance/models/public_releations.dart';
 
 class AddPerformanceController extends GetxController {
-  // Declare the TextEditingControllers
   late TextEditingController name;
-  late TextEditingController dayTo;
-  late TextEditingController monthTo;
-  late TextEditingController yearTo;
+  late TextEditingController date_end;
   late TextEditingController value;
-  late TextEditingController dayFrom;
-  late TextEditingController monthFrom;
-  late TextEditingController yearFrom;
-
-  // Override onInit to initialize the controllers
+  late TextEditingController date_start;
+  DateTime? start;
+  DateTime? end;
   @override
   void onInit() {
     super.onInit();
     // Initialize each TextEditingController
-    name = TextEditingController();
-    dayTo = TextEditingController();
-    monthTo = TextEditingController();
-    yearTo = TextEditingController();
     value = TextEditingController();
-    dayFrom = TextEditingController();
-    monthFrom = TextEditingController();
-    yearFrom = TextEditingController();
+    name = TextEditingController();
+    date_end = TextEditingController();
+    date_start = TextEditingController();
   }
 
   // Override onClose to dispose of the controllers
   @override
   void onClose() {
     // Dispose of the controllers when the controller is closed
-    name.dispose();
-    dayTo.dispose();
-    monthTo.dispose();
-    yearTo.dispose();
     value.dispose();
-    dayFrom.dispose();
-    monthFrom.dispose();
-    yearFrom.dispose();
+    name.dispose();
+    date_start.dispose();
+    date_end.dispose();
     super.onClose();
   }
 
@@ -47,21 +36,22 @@ class AddPerformanceController extends GetxController {
     required int id,
     required String name,
     required String value,
-    required String date,
+    required String date_to,
+    required String date_from,
   }) async {
     try {
       final res = await http
-          .post(Uri.parse("http://41.33.3.91:3000/department/$id"), body: {
-        "from_date_to_date": date,
+          .post(Uri.parse("http://172.16.16.7:3000/department/$id"), body: {
+        "from_date": date_to,
+        "to_date": date_from,
         "standard_name": name,
         "standard_value": value,
-        "user_id": "١"
+        "user_id": 1.toString()
       });
 
       if (res.statusCode == 200) {
-        // Decode the JSON response
-        print(res.body);
-        // Assuming the API returns a list of items
+        Get.off(() => public_releations());
+        print("done");
       } else if (res.statusCode == 400) {
         print('Bad request: ${res.body}');
       } else {

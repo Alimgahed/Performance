@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'; // Import this
 import 'package:get/get.dart';
 import 'package:performance/home.dart';
 
@@ -9,10 +10,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      locale: const Locale('ar'), // Set the locale to Arabic
       debugShowCheckedModeBanner: false,
       title: 'Performance',
       theme: ThemeData(
@@ -21,6 +22,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Home(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('ar'), // Add Arabic as a supported locale
+      ],
     );
   }
 }
