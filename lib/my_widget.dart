@@ -1,5 +1,56 @@
 import 'package:flutter/material.dart';
 
+Widget customTextFormField({
+  String? labelText,
+  required String hintText,
+  TextEditingController? controller,
+  TextInputType keyboardType = TextInputType.text,
+  bool obscureText = false,
+  String? Function(String?)? validator,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      validator: (value) {
+        // Default validation: check if the input is empty
+        if (value == null || value.isEmpty) {
+          return 'يرجى إدخال قيمة'; // Please enter a value
+        }
+        // Additional validation can be added here
+        if (validator != null) {
+          return validator(value); // Use custom validator if provided
+        }
+        return null; // Return null if validation passes
+      },
+      textAlign: TextAlign.right, // Align hint text to the right
+      textDirection: TextDirection.rtl, // Set text direction to right-to-left
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+      ),
+    ),
+  );
+}
+
 // ignore: non_constant_identifier_names
 Widget custom_continer({
   String? text,
@@ -42,6 +93,31 @@ Widget custom_continer({
             ),
           ),
         ),
+      ),
+    ),
+  );
+}
+
+Widget customButton({
+  required String text,
+  required VoidCallback onPressed,
+  Color color = Colors.blue,
+  Color textColor = Colors.white,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: textColor, backgroundColor: color, // Text color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16),
       ),
     ),
   );
