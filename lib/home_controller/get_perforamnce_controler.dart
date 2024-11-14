@@ -1,39 +1,43 @@
 import 'dart:convert'; // Import this for json decoding
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:performance/home.dart';
 import 'package:performance/models/public_releations.dart';
 
 class GetPerformanceController extends GetxController {
+  var index_names = <get_indx_name>[].obs;
+
+  @override
   void onInit() {
-    getPerformance(id: 1);
+    print(index_names);
+    get_index(id: 1);
     update();
     super.onInit();
   }
 
-  List<public_releations> relations = []; // Adjusted naming to PascalCase
+  void add_index({int? id, required String name}) {
+    print(index_names);
+    index_names.add(get_indx_name(id: id, name: name));
+    for (var i in index_names) {
+      print(i.name);
+    }
+    update();
+  }
 
-  Future<void> getPerformance({required int id}) async {
+// Adjusted naming to PascalCase
+
+  // ignore: non_constant_identifier_names
+  Future<void> get_index({required int id}) async {
     try {
       final res = await http.get(
         Uri.parse("http://172.16.16.7:3000/department/$id"),
       );
 
       if (res.statusCode == 200) {
-        // Get.offAll(() => Home());
-
-        print(res.body);
-        // Assuming the API returns a list of items
         final List<dynamic> jsonData = json.decode(res.body);
-        relations =
-            jsonData.map((item) => public_releations.fromJson(item)).toList();
+        index_names.value =
+            jsonData.map((item) => get_indx_name.fromJson(item)).toList();
         update();
-        print(relations);
-
-        for (var i in relations) {
-          print(i.name);
-          print(i.public_releationsName);
-        }
+        print(index_names);
       } else if (res.statusCode == 400) {
         print('Bad request: ${res.body}');
       } else {

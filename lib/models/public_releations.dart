@@ -47,3 +47,43 @@ List<public_releations> parsepublic_releationss(String jsonData) {
   final List<dynamic> parsedJson = json.decode(jsonData);
   return parsedJson.map((json) => public_releations.fromJson(json)).toList();
 }
+
+class get_indx_name {
+  int? id;
+  int? dep_id;
+  String? name;
+  String? type;
+
+  get_indx_name({
+    this.id,
+    this.dep_id,
+    this.name,
+    this.type,
+  });
+
+  // Factory method to create a public_releations from JSON
+  factory get_indx_name.fromJson(Map<String, dynamic> json) {
+    return get_indx_name(
+      type: json["index_type"],
+      dep_id: json['dep_id'],
+      id: json['index_id'],
+      name: json['index_name'],
+    );
+  }
+
+  // Method to convert public_releations to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'index_id': id,
+      'dep_id': dep_id,
+      'index_name': name,
+      'index_type': type,
+    };
+  }
+}
+
+// Example function to parse the JSON data
+List<get_indx_name> get_indx_names(String jsonData) {
+  final List<dynamic> parsedJson = json.decode(jsonData);
+  return parsedJson.map((json) => get_indx_name.fromJson(json)).toList();
+}

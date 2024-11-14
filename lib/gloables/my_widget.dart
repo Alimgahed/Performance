@@ -122,6 +122,72 @@ Widget custom_continer({
   );
 }
 
+Widget DropdownFormField<T>({
+  required List<DropdownMenuItem<T>> items,
+  required void Function(T?) onChanged,
+  T? initialValue,
+  required String labelText,
+  required String hintText,
+  IconData? prefixIcon,
+  IconData? dropdownIcon,
+  Color? iconEnabledColor,
+  String? Function(T?)? validator,
+  bool useValidator = true,
+}) {
+  return DropdownButtonFormField<T>(
+    value: initialValue,
+    items: items,
+    onChanged: onChanged,
+    validator: useValidator
+        ? validator ??
+            (value) {
+              if (value == null) {
+                return 'This field cannot be empty';
+              } else {
+                return null;
+              }
+            }
+        : null,
+    icon: dropdownIcon != null ? Icon(dropdownIcon) : null,
+    iconEnabledColor: iconEnabledColor,
+    iconDisabledColor: Colors.blue,
+    decoration: InputDecoration(
+      // Optional prefixIcon if provided
+      prefixIcon: prefixIcon != null
+          ? Icon(
+              prefixIcon,
+              color: Colors.blue,
+            )
+          : null,
+      fillColor: Colors.white, // Fill color for the dropdown
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      // Ensure labelText and hintText are added correctly
+      labelStyle: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+        fontSize: 14, // Slightly larger font size for better visibility
+      ),
+      labelText: labelText, // Display the label text
+      hintText: hintText, // Display the hint text
+    ),
+  );
+}
+
 Widget customButton({
   required String text,
   required VoidCallback onPressed,

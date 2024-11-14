@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:performance/Departments/Public_relations.dart';
 import 'package:performance/home_controller/home_controller.dart';
 import 'package:performance/home_controller/login_controller.dart';
-import 'package:performance/my_widget.dart';
+import 'package:performance/gloables/my_widget.dart';
+import 'package:performance/models/public_releations.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -123,7 +124,7 @@ class Home extends StatelessWidget {
                           custom_continer(
                               text:
                                   "الإدارة العامة للعلاقات العامة وخدمة المواطنين",
-                              ontap: () async {
+                              ontap: () {
                                 Get.to(() => PublicRelations());
                               }),
                         ],

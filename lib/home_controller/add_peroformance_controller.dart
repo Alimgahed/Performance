@@ -1,24 +1,22 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:performance/home.dart';
-import 'package:performance/models/public_releations.dart';
+import 'package:performance/home_controller/get_perforamnce_controler.dart';
 
 class AddPerformanceController extends GetxController {
   late TextEditingController name;
-  late TextEditingController date_end;
   late TextEditingController value;
-  late TextEditingController date_start;
+  late TextEditingController date;
   DateTime? start;
-  DateTime? end;
+
   @override
   void onInit() {
     super.onInit();
-    // Initialize each TextEditingController
     value = TextEditingController();
     name = TextEditingController();
-    date_end = TextEditingController();
-    date_start = TextEditingController();
+    date = TextEditingController();
   }
 
   // Override onClose to dispose of the controllers
@@ -27,31 +25,56 @@ class AddPerformanceController extends GetxController {
     // Dispose of the controllers when the controller is closed
     value.dispose();
     name.dispose();
-    date_start.dispose();
-    date_end.dispose();
+    date.dispose();
+
     super.onClose();
   }
 
   Future<void> addPerformance({
     required int id,
-    required String name,
-    required String value,
-    required String date_to,
-    required String date_from,
+    required int type,
+    required int value,
+    required DateTime date,
+    required String period,
   }) async {
     try {
       final res = await http
-          .post(Uri.parse("http://172.16.16.7:3000/department/$id"), body: {
-        "from_date": date_to,
-        "to_date": date_from,
-        "standard_name": name,
-        "standard_value": value,
-        "user_id": 1.toString()
+          .post(Uri.parse("http://172.16.16.7:3000/index/$id"), body: {
+        "date": date.toIso8601String(),
+        "index_period": period.toString(),
+        "index_type": "فني",
+        "index_value": value.toString(),
       });
 
       if (res.statusCode == 200) {
-        Get.off(() => public_releations());
+        // Get.offUntil(PublicRelations() as Route, (route) => false);
+
         print("done");
+      } else if (res.statusCode == 400) {
+        print('Bad request: ${res.body}');
+      } else {
+        print('Failed to load department: ${res.statusCode}');
+      }
+    } catch (e) {
+      print('Error: ${e.toString()}');
+    }
+  }
+
+  Future<void> add_index({
+    int? id,
+    required String name,
+  }) async {
+    try {
+      final res = await http.post(
+          Uri.parse("http://172.16.16.7:3000/department/$id"),
+          body: {"index_name": name, "index_type": "فني"});
+
+      if (res.statusCode == 200) {
+        GetPerformanceController controller =
+            Get.find<GetPerformanceController>();
+        controller.get_index(id: id!);
+
+        update();
       } else if (res.statusCode == 400) {
         print('Bad request: ${res.body}');
       } else {
