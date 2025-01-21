@@ -1,3 +1,7 @@
+import 'package:get/get.dart';
+
+RxBool id = false.obs;
+
 enum Period {
   monthly,
   quarterly,

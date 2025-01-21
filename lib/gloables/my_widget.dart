@@ -1,5 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+
+void showSuccessToast(String message) {
+  Get.snackbar(
+    'تم', // Title of the snackbar (can be omitted or localized)
+    message, // The message to show
+    snackPosition: SnackPosition.BOTTOM, // Position of the snackbar
+    backgroundColor: Colors.green, // Background color
+    colorText: Colors.white, // Text color
+    duration: const Duration(
+        seconds: 2), // Duration for how long it should be displayed
+    margin: const EdgeInsets.all(10), // Margin around the snackbar
+    borderRadius: 8, // Border radius
+    icon: const Icon(Icons.check_circle, color: Colors.white), // Optional icon
+  );
+}
 
 Widget customTextFormField({
   TextEditingController? controller,
@@ -28,7 +44,7 @@ Widget customTextFormField({
             ),
           ]
         : null,
-    style: TextStyle(fontSize: 18.0),
+    style: const TextStyle(fontSize: 18.0),
     textAlign: TextAlign.right,
     textDirection: TextDirection.rtl,
     decoration: InputDecoration(
@@ -36,28 +52,38 @@ Widget customTextFormField({
       hintText: hintText,
       prefixIcon: Icon(
         iconData,
-        color: Colors.blue,
+        color: Color(0xFF000C3E),
       ),
       fillColor: Colors.white,
+      focusColor: Colors.white,
+      hoverColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+        borderSide: const BorderSide(
+          color: Color(0xFF000C3E),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.blue, width: 2),
+        borderSide: const BorderSide(
+          color: Color(0xFF000C3E),
+        ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.red, width: 2),
+        borderSide: const BorderSide(
+          color: Colors.red,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.red, width: 2),
+        borderSide: const BorderSide(
+          color: Colors.red,
+        ),
       ),
-      labelStyle: TextStyle(
+      labelStyle: const TextStyle(
         color: Colors.black,
-        fontSize: 12,
+        fontSize: 15,
       ),
       filled: true, // Add this if you want the fill color to be visible
     ),
@@ -72,6 +98,64 @@ Widget customTextFormField({
         : null,
     onChanged: changed,
     onEditingComplete: onEditingComplete,
+  );
+}
+
+void showCustomErrorDialog({
+  required String errorMessage,
+  required String? title,
+  IconData icon = Icons.error_outline, // You can change the icon if needed
+  required Color? titleColor, // Default error title color
+  required Color? buttonColor,
+  required Color? iconColor, // Default icon color
+}) {
+  Get.defaultDialog(
+    title: title!,
+    titleStyle: TextStyle(
+      color: titleColor,
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+    ),
+    content: Column(
+      children: [
+        Icon(
+          icon,
+          color: iconColor,
+          size: 50,
+        ),
+        const SizedBox(height: 10),
+        Text(
+          errorMessage.tr,
+          style: const TextStyle(
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+    radius: 15,
+    backgroundColor: Colors.white,
+    barrierDismissible: false,
+    confirm: ElevatedButton(
+      onPressed: () {
+        Get.back();
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: buttonColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      ),
+      child: const Text(
+        'موافق',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+        ),
+      ),
+    ),
   );
 }
 
@@ -94,8 +178,9 @@ Widget custom_continer({
         color: color,
         border: Border.all(color: borderColor, width: borderWidth),
         borderRadius: BorderRadius.circular(borderRadius),
+        // ignore: prefer_const_literals_to_create_immutables
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.black12,
             offset: Offset(0, 4),
             blurRadius: 8,
@@ -122,6 +207,7 @@ Widget custom_continer({
   );
 }
 
+// ignore: non_constant_identifier_names
 Widget DropdownFormField<T>({
   required List<DropdownMenuItem<T>> items,
   required void Function(T?) onChanged,
@@ -152,6 +238,9 @@ Widget DropdownFormField<T>({
     iconEnabledColor: iconEnabledColor,
     iconDisabledColor: Colors.blue,
     decoration: InputDecoration(
+      hoverColor: Colors.white,
+      focusColor: Colors.white,
+
       // Optional prefixIcon if provided
       prefixIcon: prefixIcon != null
           ? Icon(
@@ -159,6 +248,7 @@ Widget DropdownFormField<T>({
               color: Colors.blue,
             )
           : null,
+
       fillColor: Colors.white, // Fill color for the dropdown
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -177,7 +267,7 @@ Widget DropdownFormField<T>({
         borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
       // Ensure labelText and hintText are added correctly
-      labelStyle: TextStyle(
+      labelStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         color: Colors.black,
         fontSize: 14, // Slightly larger font size for better visibility
@@ -191,15 +281,13 @@ Widget DropdownFormField<T>({
 Widget customButton({
   required String text,
   required VoidCallback onPressed,
-  Color color = Colors.blue,
-  Color textColor = Colors.white,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     child: ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        foregroundColor: textColor, backgroundColor: color, // Text color
+        backgroundColor: Color(0xFF000C3E), // Text color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -207,7 +295,10 @@ Widget customButton({
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 16),
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+        ),
       ),
     ),
   );

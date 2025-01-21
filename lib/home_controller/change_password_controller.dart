@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:performance/gloables/data.dart';
 import 'package:performance/gloables/my_widget.dart';
 import 'package:performance/home.dart';
 
-class LoginController extends GetxController {
-  late TextEditingController name;
+class ChangePasswordController extends GetxController {
+  late TextEditingController passwordconfirm;
   late TextEditingController password;
+
   @override
   void onInit() {
     super.onInit();
     password = TextEditingController();
-    name = TextEditingController();
+    passwordconfirm = TextEditingController();
   }
 
   // Override onClose to dispose of the controllers
@@ -20,31 +20,25 @@ class LoginController extends GetxController {
   void onClose() {
     // Dispose of the controllers when the controller is closed
     password.dispose();
-    name.dispose();
+    passwordconfirm.dispose();
 
     super.onClose();
   }
 
   // ignore: non_constant_identifier_names
-  Future<void> Login(String name, String password) async {
+  Future<void> change_password({
+    required String password,
+  }) async {
     try {
-      final res = await http.post(
-        Uri.parse("http://172.16.24.115:3000/login"),
-        body: {
-          "name": name,
-          "password": password,
-        },
-      );
+      final res = await http
+          .post(Uri.parse("http://172.16.24.115:3000/changepassword"), body: {
+        "new_password": password,
+      });
+
       if (res.statusCode == 200) {
-        // ignore: unrelated_type_equality_checks
-        if (res.body == 2.toString()) {
-          id.value = true;
-        } else {
-          id.value = false;
-        }
-        showSuccessToast("تم تسجيل الدخول بنجاح");
-        print(res.body);
-        Get.offAll(() => const home());
+        showSuccessToast("تم تغيير كلمة المرور  بنجاح");
+        await Get.offAll(() => const home());
+        // Get.offAll(() => Home());
       } else if (res.statusCode == 400) {
         showCustomErrorDialog(
             iconColor: Colors.red,
